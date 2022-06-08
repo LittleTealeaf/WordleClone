@@ -76,9 +76,10 @@ function render() {
                     if(w[i] == item.innerHTML) {
                         item.classList.add("partial");
                         removeItemOnce(w,item.innerHTML);
-                        break;
+                        return;
                     }
                 }
+                item.classList.add("wrong");
             }
         });
 
