@@ -4,8 +4,8 @@ const chars = "abcdefghijklmnopqrstuvwxyz".split("").map(str => str.charAt(0));
 
 const guesses = [];
 
-var currentRow = [];
-var currentGuess = "";
+var currentRow;
+var currentGuess = [];
 
 var word = "words";
 
@@ -69,7 +69,7 @@ function removeItemOnce(arr, value) {
 
 function renderCurrent() {
     currentRow.innerHTML = "";
-    currentGuess.split("").forEach((char, index) => {
+    currentGuess.forEach((char, index) => {
         const c = document.createElement("td");
         c.innerHTML = char;
         c.className = "character default"
@@ -100,6 +100,7 @@ async function keyPressed(ev) {
     }
     renderCurrent();
 }
+
 
 document.onkeydown = keyPressed;
 

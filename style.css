@@ -10,5 +10,18 @@
     border: 1px;
     text-align: center;
     margin: 2px;
-    background-color: grey;
+    background-color: rgb(200,200,200);
+}
+
+
+.correct {
+    background-color: green;
+}
+
+.partial {
+    background-color: yellow;
+}
+
+.wrong {
+    background-color: rgb(100,100,100);
 }

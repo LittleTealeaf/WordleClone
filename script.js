@@ -3,21 +3,82 @@ const CHARS = "abcdefghijklmnopqrstuvwxyz".split("").map(str => str.charAt(0));
 
 
 
-var WORD = "words";
+var WORD = ['w','o','r','d','s'];
 
-var guess = [];
+var previousGuesses = [
+    ['a','b','c','d','e'],
+    ['f','g','h','i','j']
+];
+
+var currentGuess = [];
+var currentRow;
 
 function render() {
     table.innerHTML = "";
 
+    previousGuesses.forEach(guess => {
+        const row = document.createElement("div");
+        row.classList.add('row');
 
+        guess.forEach((char,index) => {
+            const cell = document.createElement("div");
+            cell.classList.add("cell");
 
+            const content = document.createElement("p");
+            content.innerHTML = char;
+            cell.appendChild(content);
+
+            row.appendChild(cell);
+        })
+
+        table.appendChild(row);
+    });
+    currentRow = document.createElement("div");
+    currentRow.classList.add("row");
+    table.appendChild(currentRow);
+    renderCurrent();
 }
 
-function keyPressed(k) {
+function renderCurrent() {
+    currentRow.innerHTML = "";
+    currentGuess.forEach((char) => {
+        const cell = document.createElement("div");
+        cell.classList.add("cell");
 
+        const content = document.createElement("p");
+        content.innerHTML = char;
+        cell.appendChild(content);
+
+        currentRow.appendChild(cell);
+    });
 }
 
+
+async function keyPressed(k) {
+    k.key = k.key.toLowerCase();
+
+    if(CHARS.filter(a => a == k.key).length > 0) {
+        if (currentGuess.length < 5) {
+            currentGuess.push(k.key);
+        }
+    } else if (k.key == "enter") {
+        if (currentGuess.length > 0) {
+            currentGuess.slice(0, -1);
+        }
+    } else if (k.key == "enter" && currentGuess.length == 5) {
+
+        const words = await fetchWords();
+        for (var i in words) {
+            if (currentGuess == words[i]) {
+                guesses.push(currentGuess);
+                currentGuess = [];
+                render();
+                return;
+            }
+        }
+    }
+    renderCurrent();
+}
 
 
 function removeItemOnce(arr, value) {
@@ -43,8 +104,10 @@ const fetchWords = async () => fetch('./words.json').then(response => response.j
 const choose = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 const newGame = () => fetchWords().then(choose).then((word) => {
-    WORD = word;
+    WORD = word.split("");
     render();
 })
+
+document.onkeydown = keyPressed;
 
 newGame();
