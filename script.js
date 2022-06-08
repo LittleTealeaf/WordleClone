@@ -3,11 +3,9 @@ const CHARS = "abcdefghijklmnopqrstuvwxyz".split("").map(str => str.charAt(0));
 
 
 
-var WORD = ['w','o','r','d','s'];
+var WORD = ['w', 'o', 'r', 'd', 's'];
 
 var previousGuesses = [
-    ['a','b','c','d','e'],
-    ['f','g','h','i','j']
 ];
 
 var currentGuess = [];
@@ -20,7 +18,7 @@ function render() {
         const row = document.createElement("div");
         row.classList.add('row');
 
-        guess.forEach((char,index) => {
+        guess.forEach((char, index) => {
             const cell = document.createElement("div");
             cell.classList.add("cell");
 
@@ -55,25 +53,25 @@ function renderCurrent() {
 
 
 async function keyPressed(k) {
-    k.key = k.key.toLowerCase();
 
-    if(CHARS.filter(a => a == k.key).length > 0) {
+    if (CHARS.filter(a => a == k.key.toLowerCase()).length > 0) {
         if (currentGuess.length < 5) {
             currentGuess.push(k.key);
         }
-    } else if (k.key == "enter") {
+    } else if (k.key == "Backspace") {
         if (currentGuess.length > 0) {
-            currentGuess.slice(0, -1);
+            currentGuess.pop();
         }
-    } else if (k.key == "enter" && currentGuess.length == 5) {
-
-        const words = await fetchWords();
-        for (var i in words) {
-            if (currentGuess == words[i]) {
-                guesses.push(currentGuess);
-                currentGuess = [];
-                render();
-                return;
+    } else if (k.key == "Enter") {
+        if (currentGuess.length == 5) {
+            const words = await fetchWords();
+            for (var i in words) {
+                if (currentGuess.join("") == words[i]) {
+                    previousGuesses.push(currentGuess);
+                    currentGuess = [];
+                    render();
+                    return;
+                }
             }
         }
     }
