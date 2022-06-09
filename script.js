@@ -3,7 +3,7 @@ const CHARS = "abcdefghijklmnopqrstuvwxyz".split("").map(str => str.charAt(0));
 
 
 
-var WORD = ['w', 'o', 'r', 'd', 's'];
+var WORD = [];
 
 var previousGuesses = [
 ];
@@ -18,9 +18,21 @@ function render() {
         const row = document.createElement("div");
         row.classList.add('row');
 
+        const w = WORD.join("").split("");
+
         guess.forEach((char, index) => {
             const cell = document.createElement("div");
             cell.classList.add("cell");
+
+            if(WORD[index] == guess[index]) {
+                cell.classList.add("correct");
+                removeItemOnce(w,char);
+            } else if(contains(w,char)) {
+                cell.classList.add("partial");
+                removeItemOnce(w,char);
+            } else {
+                cell.classList.add("wrong");
+            }
 
             const content = document.createElement("p");
             content.innerHTML = char;

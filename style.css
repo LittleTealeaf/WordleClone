@@ -16,13 +16,13 @@
 
 
 .correct {
-    background-color: green;
+    background-color: green !important;
 }
 
 .partial {
-    background-color: yellow;
+    background-color: rgb(253, 253, 42) !important;
 }
 
 .wrong {
-    background-color: rgb(100,100,100);
+    background-color: rgb(78, 78, 78) !important;
 }
