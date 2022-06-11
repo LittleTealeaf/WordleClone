@@ -16,7 +16,7 @@
 
 
 .correct {
-    background-color: green !important;
+    background-color: rgb(10, 173, 10) !important;
 }
 
 .partial {
@@ -24,5 +24,13 @@
 }
 
 .wrong {
-    background-color: rgb(78, 78, 78) !important;
+    background-color: rgb(148, 148, 148) !important;
+}
+
+#keyboard {
+    margin-top: 50px;
+}
+
+#currentguess {
+    height: 50px;
 }

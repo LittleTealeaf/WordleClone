@@ -1,6 +1,13 @@
 const table = document.getElementById('guesses');
+const keyboard = document.getElementById('keyboard');
+const KEYBOARD_LETTERS = [
+    'QWERTYUIOP'.split(""),
+    'ASDFGHJKL'.split(""),
+    'ZXCVBNM'.split("")
+]
 const CHARS = "abcdefghijklmnopqrstuvwxyz".split("").map(str => str.charAt(0));
 
+const DEFAULT = 0, WRONG = 1, PARTIAL = 2, CORRECT = 3;
 
 
 var WORD = [];
@@ -24,12 +31,12 @@ function render() {
             const cell = document.createElement("div");
             cell.classList.add("cell");
 
-            if(WORD[index] == guess[index]) {
+            if (WORD[index] == guess[index]) {
                 cell.classList.add("correct");
-                removeItemOnce(w,char);
-            } else if(contains(w,char)) {
+                removeItemOnce(w, char);
+            } else if (contains(w, char)) {
                 cell.classList.add("partial");
-                removeItemOnce(w,char);
+                removeItemOnce(w, char);
             } else {
                 cell.classList.add("wrong");
             }
@@ -44,9 +51,11 @@ function render() {
         table.appendChild(row);
     });
     currentRow = document.createElement("div");
+    currentRow.id = "currentguess";
     currentRow.classList.add("row");
     table.appendChild(currentRow);
     renderCurrent();
+    buildKeyboard();
 }
 
 function renderCurrent() {
@@ -61,8 +70,26 @@ function renderCurrent() {
 
         currentRow.appendChild(cell);
     });
+
 }
 
+function calcGuess(guess) {
+    const w = WORD.join("").split("");
+    const ret = []
+    guess.forEach((char, index) => {
+
+        if (WORD[index] == guess[index]) {
+            ret.push(CORRECT)
+            removeItemOnce(w, char);
+        } else if (contains(w, char)) {
+            ret.push(PARTIAL);
+            removeItemOnce(w, char);
+        } else {
+            ret.push(WRONG);
+        }
+    })
+    return ret;
+}
 
 async function keyPressed(k) {
 
@@ -90,6 +117,45 @@ async function keyPressed(k) {
     renderCurrent();
 }
 
+function buildKeyboard() {
+    keyboard.innerHTML = "";
+    KEYBOARD_LETTERS.forEach(rowcontent => {
+        const row = document.createElement('div');
+        row.classList.add('row');
+        rowcontent.forEach(item => {
+
+            var type = DEFAULT;
+
+            previousGuesses.forEach(guess => {
+                const a = calcGuess(guess);
+                guess.forEach((char,index) => {
+                    if(char.toLowerCase() == item.toLowerCase()) {
+                        type = Math.max(type,a[index]);
+                    }
+                })
+            });
+
+            const cell = document.createElement('div');
+            cell.classList.add('cell');
+
+            if(type == PARTIAL) {
+                cell.classList.add('partial');
+            } else if(type == WRONG) {
+                cell.classList.add('wrong');
+            } else if(type == CORRECT) {
+                cell.classList.add('correct');
+            }
+
+
+            const content = document.createElement('p');
+            content.innerHTML = item;
+            cell.appendChild(content);
+            row.appendChild(cell);
+        })
+        keyboard.append(row);
+    });
+}
+
 
 function removeItemOnce(arr, value) {
     var index = arr.indexOf(value);
@@ -100,9 +166,10 @@ function removeItemOnce(arr, value) {
 }
 
 
+
 function contains(arr, item) {
     for (var i in arr) {
-        if (arr[i] = item) {
+        if (arr[i] == item) {
             return true;
         }
     }
@@ -121,3 +188,4 @@ const newGame = () => fetchWords().then(choose).then((word) => {
 document.onkeydown = keyPressed;
 
 newGame();
+buildKeyboard();
