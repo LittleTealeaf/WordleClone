@@ -25,20 +25,18 @@ function render() {
         const row = document.createElement("div");
         row.classList.add('row');
 
-        const w = WORD.join("").split("");
+        const values = calcGuess(guess);
 
         guess.forEach((char, index) => {
             const cell = document.createElement("div");
             cell.classList.add("cell");
 
-            if (WORD[index] == guess[index]) {
-                cell.classList.add("correct");
-                removeItemOnce(w, char);
-            } else if (contains(w, char)) {
-                cell.classList.add("partial");
-                removeItemOnce(w, char);
-            } else {
-                cell.classList.add("wrong");
+            if(values[index] == WRONG) {
+                cell.classList.add('wrong');
+            } else if(values[index] == PARTIAL) {
+                cell.classList.add('partial');
+            } else if(values[index] == CORRECT) {
+                cell.classList.add('correct');
             }
 
             const content = document.createElement("p");
@@ -75,20 +73,22 @@ function renderCurrent() {
 
 function calcGuess(guess) {
     const w = WORD.join("").split("");
-    const ret = []
-    guess.forEach((char, index) => {
+    const r = w.map(i => WRONG);
 
-        if (WORD[index] == guess[index]) {
-            ret.push(CORRECT)
-            removeItemOnce(w, char);
-        } else if (contains(w, char)) {
-            ret.push(PARTIAL);
-            removeItemOnce(w, char);
-        } else {
-            ret.push(WRONG);
+    guess.forEach((char,index) => {
+        if(char == WORD[index]) {
+            r[index] = CORRECT;
+            removeItemOnce(w,char);
+        }
+    });
+    guess.forEach((char,index) => {
+        if(contains(w,char)) {
+            r[index] = PARTIAL;
+            removeItemOnce(w,char);
         }
     })
-    return ret;
+    return r;
+
 }
 
 async function keyPressed(k) {
