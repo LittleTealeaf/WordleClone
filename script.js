@@ -1,139 +1,191 @@
-const guessesElement = document.getElementById('guesses');
+const table = document.getElementById('guesses');
+const keyboard = document.getElementById('keyboard');
+const KEYBOARD_LETTERS = [
+    'QWERTYUIOP'.split(""),
+    'ASDFGHJKL'.split(""),
+    'ZXCVBNM'.split("")
+]
+const CHARS = "abcdefghijklmnopqrstuvwxyz".split("").map(str => str.charAt(0));
 
-const chars = "abcdefghijklmnopqrstuvwxyz".split("").map(str => str.charAt(0));
+const DEFAULT = 0, WRONG = 1, PARTIAL = 2, CORRECT = 3;
 
-const guesses = [];
 
-var currentRow = [];
-var currentGuess = "";
+var WORD = [];
 
-var word = "words";
+var previousGuesses = [
+];
+
+var currentGuess = [];
+var currentRow;
 
 function render() {
-    guessesElement.innerHTML = "";
-    guesses.forEach(item => {
-        const row = document.createElement("tr");
-        row.className = "row";
+    table.innerHTML = "";
 
+    previousGuesses.forEach(guess => {
+        const row = document.createElement("div");
+        row.classList.add('row');
 
-        var w = word.split("");
+        const values = calcGuess(guess);
 
-        const values = item.split("").map(value => {
-            const td = document.createElement("td");
-            td.innerHTML = value;
-            td.classList.add("character");
-            row.appendChild(td);
-            return td;
-        });
+        guess.forEach((char, index) => {
+            const cell = document.createElement("div");
+            cell.classList.add("cell");
 
-        values.forEach((item, index) => {
-            if (word.charAt(index) == item.innerHTML.charAt(0)) {
-                item.classList.add("correct");
-                removeItemOnce(w,item.innerHTML);
+            if(values[index] == WRONG) {
+                cell.classList.add('wrong');
+            } else if(values[index] == PARTIAL) {
+                cell.classList.add('partial');
+            } else if(values[index] == CORRECT) {
+                cell.classList.add('correct');
             }
-        });
 
-        values.forEach((item,index) => {
+            const content = document.createElement("p");
+            content.innerHTML = char;
+            cell.appendChild(content);
 
-            if(!item.classList.contains("correct")) {
-                for(var i in w) {
-                    if(w[i] == item.innerHTML) {
-                        item.classList.add("partial");
-                        removeItemOnce(w,item.innerHTML);
-                        return;
-                    }
-                }
-                item.classList.add("wrong");
-            }
-        });
+            row.appendChild(cell);
+        })
 
+        table.appendChild(row);
+    });
+    currentRow = document.createElement("div");
+    currentRow.id = "currentguess";
+    currentRow.classList.add("row");
+    table.appendChild(currentRow);
+    renderCurrent();
+    buildKeyboard();
+}
 
-        console.log(values);
-        guessesElement.appendChild(row);
+function renderCurrent() {
+    currentRow.innerHTML = "";
+    currentGuess.forEach((char) => {
+        const cell = document.createElement("div");
+        cell.classList.add("cell");
+
+        const content = document.createElement("p");
+        content.innerHTML = char;
+        cell.appendChild(content);
+
+        currentRow.appendChild(cell);
+    });
+
+}
+
+function calcGuess(guess) {
+    const w = WORD.join("").split("");
+    const r = w.map(i => WRONG);
+
+    guess.forEach((char,index) => {
+        if(char == WORD[index]) {
+            r[index] = CORRECT;
+            removeItemOnce(w,char);
+        }
+    });
+    guess.forEach((char,index) => {
+        if(contains(w,char)) {
+            r[index] = PARTIAL;
+            removeItemOnce(w,char);
+        }
     })
+    return r;
 
-    currentRow = document.createElement("tr");
-    currentRow.className = "row";
-    guessesElement.appendChild(currentRow);
+}
+
+async function keyPressed(k) {
+
+    if (CHARS.filter(a => a == k.key.toLowerCase()).length > 0) {
+        if (currentGuess.length < 5) {
+            currentGuess.push(k.key);
+        }
+    } else if (k.key == "Backspace") {
+        if (currentGuess.length > 0) {
+            currentGuess.pop();
+        }
+    } else if (k.key == "Enter") {
+        if (currentGuess.length == 5) {
+            const words = await fetchWords();
+            for (var i in words) {
+                if (currentGuess.join("") == words[i]) {
+                    previousGuesses.push(currentGuess);
+                    currentGuess = [];
+                    render();
+                    return;
+                }
+            }
+        }
+    }
     renderCurrent();
 }
+
+function buildKeyboard() {
+    keyboard.innerHTML = "";
+    KEYBOARD_LETTERS.forEach(rowcontent => {
+        const row = document.createElement('div');
+        row.classList.add('row');
+        rowcontent.forEach(item => {
+
+            var type = DEFAULT;
+
+            previousGuesses.forEach(guess => {
+                const a = calcGuess(guess);
+                guess.forEach((char,index) => {
+                    if(char.toLowerCase() == item.toLowerCase()) {
+                        type = Math.max(type,a[index]);
+                    }
+                })
+            });
+
+            const cell = document.createElement('div');
+            cell.classList.add('cell');
+
+            if(type == PARTIAL) {
+                cell.classList.add('partial');
+            } else if(type == WRONG) {
+                cell.classList.add('wrong');
+            } else if(type == CORRECT) {
+                cell.classList.add('correct');
+            }
+
+
+            const content = document.createElement('p');
+            content.innerHTML = item;
+            cell.appendChild(content);
+            row.appendChild(cell);
+        })
+        keyboard.append(row);
+    });
+}
+
 
 function removeItemOnce(arr, value) {
     var index = arr.indexOf(value);
     if (index > -1) {
-      arr.splice(index, 1);
+        arr.splice(index, 1);
     }
     return arr;
-  }
-
-
-function renderCurrent() {
-    currentRow.innerHTML = "";
-    currentGuess.split("").forEach((char, index) => {
-        const c = document.createElement("td");
-        c.innerHTML = char;
-        c.className = "character default"
-        currentRow.appendChild(c);
-    })
-
 }
 
-async function keyPressed(ev) {
-    if (isAlpha(ev.key.toLowerCase())) {
-        if (currentGuess.length < 5) {
-            currentGuess = currentGuess + ev.key;
-        }
-    } else if (ev.key == "Backspace") {
-        if (currentGuess.length > 0) {
-            currentGuess = currentGuess.slice(0, -1);
-        }
-    } else if (ev.key == "Enter" && currentGuess.length == 5) {
 
-        const words = await fetchWords();
-        for (var i in words) {
-            if (currentGuess == words[i]) {
-                guesses.push(currentGuess);
-                currentGuess = "";
-                render();
-            }
-        }
-    }
-    renderCurrent();
-}
 
-document.onkeydown = keyPressed;
-
-function contains(array, item) {
-    for (var i in array) {
-        if (array[i] == item) {
+function contains(arr, item) {
+    for (var i in arr) {
+        if (arr[i] == item) {
             return true;
         }
     }
     return false;
-}
-
-function isAlpha(val) {
-    for (var i in chars) {
-
-        if (val == chars[i]) {
-            return true;
-        }
-    }
-    return false;
-}
-
-function choose(choices) {
-    var index = Math.floor(Math.random() * choices.length);
-    return choices[index];
 }
 
 const fetchWords = async () => fetch('./words.json').then(response => response.json());
 
-async function newWord() {
-    return fetchWords().then(choose);
-}
+const choose = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
-newWord().then(val => {
-    word = val;
+const newGame = () => fetchWords().then(choose).then((word) => {
+    WORD = word.split("");
     render();
-});
+})
+
+document.onkeydown = keyPressed;
+
+newGame();
+buildKeyboard();
