@@ -181,7 +181,7 @@ const fetchWords = async () => fetch('./words.json').then(response => response.j
 const choose = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 const newGame = () => fetchWords().then(choose).then((word) => {
-    WORD = "shins".split("");
+    WORD = word.split("");
     render();
 })
 
