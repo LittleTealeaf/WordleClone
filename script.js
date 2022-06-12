@@ -137,6 +137,7 @@ function buildKeyboard() {
 
             const cell = document.createElement('div');
             cell.classList.add('cell');
+            cell.onclick = () => keyPressed({key: String(item).toLowerCase()});
 
             if(type == PARTIAL) {
                 cell.classList.add('partial');
