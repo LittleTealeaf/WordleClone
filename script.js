@@ -82,7 +82,7 @@ function calcGuess(guess) {
         }
     });
     guess.forEach((char,index) => {
-        if(contains(w,char)) {
+        if(contains(w,char) && r[index] != CORRECT) {
             r[index] = PARTIAL;
             removeItemOnce(w,char);
         }
@@ -181,7 +181,7 @@ const fetchWords = async () => fetch('./words.json').then(response => response.j
 const choose = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 const newGame = () => fetchWords().then(choose).then((word) => {
-    WORD = word.split("");
+    WORD = "shins".split("");
     render();
 })
 
