@@ -1,3 +1,5 @@
+// TODO: work on making animations look better. Probably separate different functions into separate files. Additionally, add some statistical analysis and such
+
 const table = document.getElementById('guesses');
 const keyboard = document.getElementById('keyboard');
 const KEYBOARD_LETTERS = [
