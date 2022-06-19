@@ -37,7 +37,7 @@ function render() {
                 cell.classList.add('wrong');
             } else if(values[index] == PARTIAL) {
                 cell.classList.add('partial');
-            } else if(values[index] == CORRECT) {
+            } else if(values[index] == ANSWER) {
                 cell.classList.add('correct');
             }
 
@@ -79,12 +79,12 @@ function calcGuess(guess) {
 
     guess.forEach((char,index) => {
         if(char == WORD[index]) {
-            r[index] = CORRECT;
+            r[index] = ANSWER;
             removeItemOnce(w,char);
         }
     });
     guess.forEach((char,index) => {
-        if(contains(w,char) && r[index] != CORRECT) {
+        if(contains(w,char) && r[index] != ANSWER) {
             r[index] = PARTIAL;
             removeItemOnce(w,char);
         }
@@ -145,7 +145,7 @@ function buildKeyboard() {
                 cell.classList.add('partial');
             } else if(type == WRONG) {
                 cell.classList.add('wrong');
-            } else if(type == CORRECT) {
+            } else if(type == ANSWER) {
                 cell.classList.add('correct');
             }
 

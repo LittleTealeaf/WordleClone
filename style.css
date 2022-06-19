@@ -1,37 +1,104 @@
 h1 {
     margin: auto;
+
+    position: sticky;
+    top: 0px;
+    background-color: white;
+    width: 100%;
+    text-align: center;
+    padding: 20px;
+}
+
+#board {
+    margin: auto;
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+#keyboard {
+    transition-duration: 0.5s;
+    margin-top: 50px;
+    bottom: 0px;
+    padding: 0px;
+    box-shadow: 0px 0px 15px 20px rgba(255,255,255,1);
+    background-color: white;
     width: fit-content;
+    margin: auto;
+
+
+    margin-bottom: 5px;
+
+}
+
+#keyboard .cell {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
 }
 
 .row {
     display: flex;
     width: fit-content;
     margin: auto;
+    transition-duration: 0.3s;
+    margin-top: 3px;
+}
+
+.row[data-active="true"] {
+    margin-top: 50px;
+}
+
+.row[data-active="true"] .cell {
+    margin-inline-start: 10px;
+}
+
+.row[data-invalid] * {
+    background-color: red !important;
+    width: 70px;
+    height: 70px;
 }
 
 .cell {
-    background-color: aqua;
-    width: fit-content;
-    height: 50px;
+    width: 60px;
+    height: 60px;
+
+    transition-duration: 0.3s;
+
+    text-align: center;
+    align-items: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    text-transform: uppercase;
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 25px;
+
+    margin-inline: 2px;
 }
 
-.cell p {
-    padding-inline: 20px;
+.cell[data-pop='c'] {
+    background-color: rgba(255, 255, 255, 0);
 }
 
-
-.red {
-    color: red;
+.cell[data-pop='f'] {
+    background-color: rgba(233, 240, 240, 1);
 }
 
-.green {
-    color: green;
+.cell[data-pop='t'],
+.cell[data-state='unknown'] {
+    background-color: rgb(206, 208, 211);
 }
 
-.grey {
-    color: grey;
+.cell[data-state='correct'] {
+    background-color: rgb(0, 161, 0);
 }
 
-.lgray {
-    color: lightslategray;
+.cell[data-state='partial'] {
+    background-color: rgb(252, 252, 0);
+}
+
+.cell[data-state='wrong'] {
+    background-color: rgb(134, 134, 134);
 }
