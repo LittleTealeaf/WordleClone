@@ -1,36 +1,37 @@
+h1 {
+    margin: auto;
+    width: fit-content;
+}
+
 .row {
     display: flex;
     width: fit-content;
     margin: auto;
 }
 
-.row .cell {
-    width: 50px;
+.cell {
+    background-color: aqua;
+    width: fit-content;
     height: 50px;
-    border: 1px;
-    text-align: center;
-    margin: 2px;
-    background-color: rgb(200,200,200);
-    transition-duration: 0.5s;
+}
+
+.cell p {
+    padding-inline: 20px;
 }
 
 
-.correct {
-    background-color: rgb(10, 173, 10) !important;
+.red {
+    color: red;
 }
 
-.partial {
-    background-color: rgb(253, 253, 42) !important;
+.green {
+    color: green;
 }
 
-.wrong {
-    background-color: rgb(148, 148, 148) !important;
+.grey {
+    color: grey;
 }
 
-#keyboard {
-    margin-top: 50px;
-}
-
-#currentguess {
-    height: 50px;
+.lgray {
+    color: lightslategray;
 }

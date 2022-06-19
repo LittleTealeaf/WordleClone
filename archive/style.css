@@ -1,0 +1,36 @@
+.row {
+    display: flex;
+    width: fit-content;
+    margin: auto;
+}
+
+.row .cell {
+    width: 50px;
+    height: 50px;
+    border: 1px;
+    text-align: center;
+    margin: 2px;
+    background-color: rgb(200,200,200);
+    transition-duration: 0.5s;
+}
+
+
+.correct {
+    background-color: rgb(10, 173, 10) !important;
+}
+
+.partial {
+    background-color: rgb(253, 253, 42) !important;
+}
+
+.wrong {
+    background-color: rgb(148, 148, 148) !important;
+}
+
+#keyboard {
+    margin-top: 50px;
+}
+
+#currentguess {
+    height: 50px;
+}
