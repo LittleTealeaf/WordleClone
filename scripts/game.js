@@ -1,4 +1,5 @@
 const board = document.getElementById("board");
+const winprompt = document.getElementById("winprompt");
 const CHARS = "abcdefghijklmnopqrstuvwxyz".split("").map(str => str.charAt(0));
 
 const KEYBOARD_LETTERS = [
@@ -7,13 +8,11 @@ const KEYBOARD_LETTERS = [
     "ZXCVBNM".split("")
 ];
 
-
-
-
-
 let WORDS = [];
 
 var ANSWER = [];
+
+winprompt.dataset.hide = "";
 
 function removeItemOnce(arr, value) {
     var index = arr.indexOf(value);
@@ -35,6 +34,12 @@ class Keyboard {
             row_letters.forEach(letter => {
                 const cell = document.createElement("div");
                 cell.classList.add("cell");
+                cell.classList.add("noselect");
+                cell.onclick = (cv) => {
+                    keyPressed({
+                        key: letter
+                    })
+                }
                 cell.dataset.state = 'unknown';
                 cell.innerHTML = letter;
                 row.appendChild(cell);
@@ -45,13 +50,24 @@ class Keyboard {
         });
     }
 
-    setColor(key,value) {
-        if(this.keys[key].dataset.state == 'unknown') {
+    setColor(key, value) {
+        if (this.keys[key].dataset.state == 'unknown') {
             this.keys[key].dataset.state = value;
-        } else if(this.keys[key].dataset.state == 'partial' && value == 'correct') {
+        } else if (this.keys[key].dataset.state == 'partial' && value == 'correct') {
             this.keys[key].dataset.state = value;
         }
     }
+
+    hide() {
+        this.element.dataset.hide = "";
+    }
+
+    show() {
+        delete this.element.dataset.hide;
+    }
+
+
+
 }
 
 class Guess {
@@ -72,7 +88,7 @@ class Guess {
         setTimeout(() => this.element.childNodes.forEach(node => {
             node.dataset.pop = 'f';
         }), 1);
-        this.element.scrollIntoView({ behavior: "smooth"});
+        this.element.scrollIntoView({ behavior: "smooth" });
     }
 
     add(value) {
@@ -88,7 +104,7 @@ class Guess {
     remove() {
         if (this.index > 0) {
             this.index--;
-            this.element.children[this.index].innerHTML = null;
+            this.element.children[this.index].innerHTML = "";
             this.element.children[this.index].dataset.pop = 'f';
             this.letters.pop();
         }
@@ -108,27 +124,27 @@ class Guess {
         const pool = [...correct];
         const nodes = this.element.childNodes;
         // put green values
-        nodes.forEach((node,i) => {
-            if(correct[i] == node.innerHTML) {
+        nodes.forEach((node, i) => {
+            if (correct[i] == node.innerHTML) {
                 node.dataset.state = 'correct';
-                removeItemOnce(pool,correct[i]);
-                keyboard.setColor(correct[i],'correct');
+                removeItemOnce(pool, correct[i]);
+                keyboard.setColor(correct[i], 'correct');
             }
         });
 
-        if(pool.length == 0) {
+        if (pool.length == 0) {
             return false;
         }
 
         nodes.forEach((node) => {
-            if(node.dataset.state == null) {
-                if(pool.includes(node.innerHTML)) {
-                    removeItemOnce(pool,node.innerHTML);
+            if (node.dataset.state == null) {
+                if (pool.includes(node.innerHTML)) {
+                    removeItemOnce(pool, node.innerHTML);
                     node.dataset.state = 'partial';
-                    keyboard.setColor(node.innerHTML,'partial');
+                    keyboard.setColor(node.innerHTML, 'partial');
                 } else {
                     node.dataset.state = 'wrong';
-                    keyboard.setColor(node.innerHTML,'wrong');
+                    keyboard.setColor(node.innerHTML, 'wrong');
                 }
             }
         });
@@ -138,29 +154,39 @@ class Guess {
 
 }
 
-const keyboard = new Keyboard();
+var keyboard;
 
-var guesses = [
-    new Guess()
-]
+var guesses;
 
+var activeGuess;
 
 async function keyPressed(k) {
-    if (CHARS.filter(a => a == k.key.toLowerCase()).length > 0) {
-        guesses[guesses.length - 1].add(k.key.toUpperCase());
-    } else if (k.key == "Backspace") {
-        guesses[guesses.length - 1].remove();
-    } else if (k.key == "Enter") {
-        if (guesses[guesses.length - 1].letters.length == 5) {
-            if (isValidWord(guesses[guesses.length - 1].letters.join(''))) {
-                guesses[guesses.length - 1].setActive(false);
-                if(guesses[guesses.length - 1].color(ANSWER)) {
-                    guesses.push(new Guess());
-                }
+    if (activeGuess != null) {
+        if (CHARS.filter(a => a == k.key.toLowerCase()).length > 0) {
+            activeGuess.add(k.key.toUpperCase());
+        } else if (k.key == "Backspace") {
+            activeGuess.remove();
+        } else if (k.key == "Enter") {
+            if (activeGuess.letters.length == 5) {
+                if (isValidWord(activeGuess.letters.join(''))) {
+                    activeGuess.setActive(false);
+                    if (activeGuess.color(ANSWER)) {
+                        guesses.push(activeGuess = new Guess());
+                    } else {
+                        //Game Win
+                        activeGuess = null;
+                        keyboard.hide();
+                        delete winprompt.dataset.hide
+                    }
 
-            } else {
-                guesses[guesses.length - 1].flashRed();
+                } else {
+                    activeGuess.flashRed();
+                }
             }
+        }
+    } else {
+        if(k.key == " ") {
+            newGame();
         }
     }
 }
@@ -176,5 +202,18 @@ document.onkeydown = keyPressed;
 
 fetch('./words.json').then(response => response.json()).then(words => words.map(word => word.toUpperCase())).then(words => {
     WORDS = words;
-    ANSWER = choose(words).split("");
+    newGame();
 });
+
+function newGame() {
+    ANSWER = choose(WORDS);
+    board.innerHTML = "";
+    guesses = [
+        activeGuess = new Guess()
+    ]
+    keyboard = new Keyboard();
+    keyboard.show();
+    winprompt.dataset.hide = "";
+}
+
+document.getElementById("playagain").onclick = newGame
