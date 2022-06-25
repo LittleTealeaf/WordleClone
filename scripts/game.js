@@ -2,6 +2,8 @@ const board = document.getElementById("board");
 const winprompt = document.getElementById("winprompt");
 const CHARS = "abcdefghijklmnopqrstuvwxyz".split("").map(str => str.charAt(0));
 
+const GAMES = [];
+
 const KEYBOARD_LETTERS = [
     "QWERTYUIOP".split(""),
     "ASDFGHJKL".split(""),
@@ -174,6 +176,10 @@ async function keyPressed(k) {
                         guesses.push(activeGuess = new Guess());
                     } else {
                         //Game Win
+                        GAMES.push({
+                            word: ANSWER,
+                            count: guesses.length
+                        })
                         activeGuess = null;
                         keyboard.hide();
                         delete winprompt.dataset.hide
