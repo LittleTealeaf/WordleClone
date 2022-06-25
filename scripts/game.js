@@ -115,6 +115,11 @@ class Guess {
                 keyboard.setColor(correct[i],'correct');
             }
         });
+
+        if(pool.length == 0) {
+            return false;
+        }
+
         nodes.forEach((node) => {
             if(node.dataset.state == null) {
                 if(pool.includes(node.innerHTML)) {
@@ -127,6 +132,7 @@ class Guess {
                 }
             }
         });
+        return true;
     }
 
 
@@ -148,8 +154,10 @@ async function keyPressed(k) {
         if (guesses[guesses.length - 1].letters.length == 5) {
             if (isValidWord(guesses[guesses.length - 1].letters.join(''))) {
                 guesses[guesses.length - 1].setActive(false);
-                guesses[guesses.length - 1].color(ANSWER);
-                guesses.push(new Guess());
+                if(guesses[guesses.length - 1].color(ANSWER)) {
+                    guesses.push(new Guess());
+                }
+
             } else {
                 guesses[guesses.length - 1].flashRed();
             }
