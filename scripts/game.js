@@ -37,6 +37,10 @@ function addScore(number) {
 
 function updateDisplay() {
 
+    if(document.cookie.split("=").length == 0) {
+        return;
+    }
+
     const data = {}
     var max = 0;
     var maxHeight = 1;
