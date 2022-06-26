@@ -37,7 +37,7 @@ function addScore(number) {
 
 function updateDisplay() {
 
-    if(document.cookie.split("=").length == 0) {
+    if(document.cookie == '') {
         return;
     }
 
