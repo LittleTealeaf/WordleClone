@@ -37,8 +37,7 @@ h1 {
 }
 
 #winprompt {
-    margin: auto;
-    width: fit-content;
+    width: 100%;
     transition-duration: 0.5s;
 
     margin-bottom: 30px;
@@ -56,6 +55,78 @@ h1 {
 
 #winprompt .button {
     margin-top: 20px;
+}
+
+#stats {
+
+    width: 80%;
+    margin: auto;
+    height: fit-content;
+    padding: 20px;
+    background-color: #cccccc;
+    border-radius: 30px;
+    transition-duration: 0.5s;
+}
+
+#graph {
+    display: flex;
+}
+
+#stats * {
+    transition-duration: 0.5s;
+}
+
+#stats .column {
+    height: 100%;
+    flex-grow: 1;
+}
+
+#stats .label {
+    text-align: center;
+    font-size: 20px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+#stats .title {
+    margin: auto;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#stats .barcontainer {
+    height: 200px;
+    display: flex;
+}
+
+#stats .bar {
+    width: 100%;
+    flex-grow: 1;
+    margin: 5px;
+    display: flex;
+    flex-direction: column;
+    align-self: flex-end;
+    text-align: center;
+}
+
+#stats .countlabel {
+    text-align: center;
+
+}
+
+
+
+
+/* #stats #datarow {
+    height: 200px;
+
+} */
+
+#stats .bar {
+    /* flex-grow: 1; */
+    background-color: red;
+    /* margin: 5px; */
+    /* bottom: 0%; */
+
 }
 
 .noselect {

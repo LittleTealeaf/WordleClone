@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
     <title>Tea-Wordle</title>
+    <script src="scripts/cookies.js"></script>
     <script defer src="scripts/game.js"></script>
   </head>
   <body>
@@ -16,10 +17,15 @@
     </div>
     <div id="winprompt">
       <div class="title text">Victory!</div>
+      <div id="stats">
+        <div class="title">Guesses</div>
+        <div id="graph"></div>
+      </div>
 
       <div class="button noselect" id="playagain">
         Play Again
       </div>
+
     </div>
     <div id="keyboard">
 

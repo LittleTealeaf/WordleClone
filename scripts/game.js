@@ -1,3 +1,5 @@
+/// <reference path="./cookies.js" />
+
 const board = document.getElementById("board");
 const winprompt = document.getElementById("winprompt");
 const CHARS = "abcdefghijklmnopqrstuvwxyz".split("").map(str => str.charAt(0));
@@ -14,7 +16,8 @@ let WORDS = [];
 
 var ANSWER = [];
 
-winprompt.dataset.hide = "";
+
+
 
 function removeItemOnce(arr, value) {
     var index = arr.indexOf(value);
@@ -22,6 +25,116 @@ function removeItemOnce(arr, value) {
         arr.splice(index, 1);
     }
     return arr;
+}
+
+function addScore(number) {
+    if (document.cookie.length == 0) {
+        document.cookie = "scores=" + number;
+    } else {
+        document.cookie += "," + number;
+    }
+}
+
+function updateDisplay() {
+
+    const data = {}
+    var max = 0;
+    var maxHeight = 1;
+    document.cookie.split("=")[1].split(",").map(i => Number(i)).forEach(i => {
+        if (data[i] == null) {
+            data[i] = 1;
+        } else {
+            data[i]++;
+            if (maxHeight < data[i]) {
+                maxHeight = data[i];
+            }
+        }
+        if (i > max) {
+            max = i;
+        }
+    });
+
+    const stats = document.getElementById("graph");
+    stats.innerHTML = "";
+
+    for (var i = 1; i <= max; i++) {
+        if (data[i] == null) {
+            data[i] = 0.1;
+        }
+        const countLabel = document.createElement("div");
+        countLabel.innerHTML = data[i];
+
+        const bar = document.createElement("div");
+        bar.classList.add("bar");
+
+
+
+
+        const percentage = data[i] / maxHeight;
+        bar.style.height = `${percentage * 100}%`;
+
+        const barcontainer = document.createElement("div");
+        barcontainer.classList.add("barcontainer");
+        barcontainer.appendChild(bar);
+
+        const label = document.createElement("div");
+        label.classList.add("label");
+        label.innerHTML = i;
+
+        const column = document.createElement("div");
+        column.classList.add("column");
+
+        column.appendChild(barcontainer);
+        column.appendChild(label);
+
+        stats.appendChild(column);
+    }
+
+    // const stats = document.getElementById("stats");
+    // stats.innerHTML = "";
+
+    // const dataRow = document.createElement("tr");
+    // dataRow.id = "datarow";
+    // stats.appendChild(dataRow);
+
+    // const labelRow = document.createElement("tr");
+    // stats.appendChild(labelRow);
+
+
+    // for(var i = 1; i <= max; i++) {
+    //     const column = document.createElement("div");
+    //     column.classList.add("bar");
+
+    //     if(data[i] == null) {
+    //         data[i] = 0;
+    //     }
+
+    //     const percentage = data[i] / maxHeight;
+
+    //     column.style.height = `${percentage * 100}%`
+
+    //     const cell = document.createElement("td");
+    //     cell.appendChild(column);
+
+    //     dataRow.appendChild(cell);
+
+
+    //     const labelText = document.createElement("p");
+    //     labelText.innerHTML = i;
+
+    //     const label = document.createElement("td");
+    //     label.appendChild(labelText);
+
+    //     labelRow.appendChild(label);
+
+
+    // }
+
+
+
+
+
+
 }
 
 class Keyboard {
@@ -176,6 +289,8 @@ async function keyPressed(k) {
                         guesses.push(activeGuess = new Guess());
                     } else {
                         //Game Win
+                        addScore(guesses.length);
+                        updateDisplay();
                         GAMES.push({
                             word: ANSWER,
                             count: guesses.length
@@ -191,7 +306,7 @@ async function keyPressed(k) {
             }
         }
     } else {
-        if(k.key == " ") {
+        if (k.key == " ") {
             newGame();
         }
     }
@@ -219,6 +334,7 @@ function newGame() {
     ]
     keyboard = new Keyboard();
     keyboard.show();
+    updateDisplay();
     winprompt.dataset.hide = "";
 }
 
