@@ -37,108 +37,65 @@ function addScore(number) {
 
 function updateDisplay() {
 
-    if(document.cookie == '') {
-        return;
-    }
+    try {
 
-    const data = {}
-    var max = 0;
-    var maxHeight = 1;
-    document.cookie.split("=")[1].split(",").map(i => Number(i)).forEach(i => {
-        if (data[i] == null) {
-            data[i] = 1;
-        } else {
-            data[i]++;
-            if (maxHeight < data[i]) {
-                maxHeight = data[i];
+        const data = {}
+        var max = 0;
+        var maxHeight = 1;
+        document.cookie.split("=")[1].split(",").map(i => Number(i)).forEach(i => {
+            if (data[i] == null) {
+                data[i] = 1;
+            } else {
+                data[i]++;
+                if (maxHeight < data[i]) {
+                    maxHeight = data[i];
+                }
             }
+            if (i > max) {
+                max = i;
+            }
+        });
+
+        const stats = document.getElementById("graph");
+        stats.innerHTML = "";
+
+        for (var i = 1; i <= max; i++) {
+            if (data[i] == null) {
+                data[i] = 0.1;
+            }
+            const countLabel = document.createElement("div");
+            countLabel.innerHTML = data[i];
+
+            const bar = document.createElement("div");
+            bar.classList.add("bar");
+
+
+
+
+            const percentage = data[i] / maxHeight;
+            bar.style.height = `${percentage * 100}%`;
+
+            const barcontainer = document.createElement("div");
+            barcontainer.classList.add("barcontainer");
+            barcontainer.appendChild(bar);
+
+            const label = document.createElement("div");
+            label.classList.add("label");
+            label.innerHTML = i;
+
+            const column = document.createElement("div");
+            column.classList.add("column");
+
+            column.appendChild(barcontainer);
+            column.appendChild(label);
+
+            stats.appendChild(column);
         }
-        if (i > max) {
-            max = i;
-        }
-    });
+    } catch (e) {
 
-    const stats = document.getElementById("graph");
-    stats.innerHTML = "";
-
-    for (var i = 1; i <= max; i++) {
-        if (data[i] == null) {
-            data[i] = 0.1;
-        }
-        const countLabel = document.createElement("div");
-        countLabel.innerHTML = data[i];
-
-        const bar = document.createElement("div");
-        bar.classList.add("bar");
-
-
-
-
-        const percentage = data[i] / maxHeight;
-        bar.style.height = `${percentage * 100}%`;
-
-        const barcontainer = document.createElement("div");
-        barcontainer.classList.add("barcontainer");
-        barcontainer.appendChild(bar);
-
-        const label = document.createElement("div");
-        label.classList.add("label");
-        label.innerHTML = i;
-
-        const column = document.createElement("div");
-        column.classList.add("column");
-
-        column.appendChild(barcontainer);
-        column.appendChild(label);
-
-        stats.appendChild(column);
     }
 
-    // const stats = document.getElementById("stats");
-    // stats.innerHTML = "";
-
-    // const dataRow = document.createElement("tr");
-    // dataRow.id = "datarow";
-    // stats.appendChild(dataRow);
-
-    // const labelRow = document.createElement("tr");
-    // stats.appendChild(labelRow);
-
-
-    // for(var i = 1; i <= max; i++) {
-    //     const column = document.createElement("div");
-    //     column.classList.add("bar");
-
-    //     if(data[i] == null) {
-    //         data[i] = 0;
-    //     }
-
-    //     const percentage = data[i] / maxHeight;
-
-    //     column.style.height = `${percentage * 100}%`
-
-    //     const cell = document.createElement("td");
-    //     cell.appendChild(column);
-
-    //     dataRow.appendChild(cell);
-
-
-    //     const labelText = document.createElement("p");
-    //     labelText.innerHTML = i;
-
-    //     const label = document.createElement("td");
-    //     label.appendChild(labelText);
-
-    //     labelRow.appendChild(label);
-
-
-    // }
-
-
-
-
-
-
+    
 }
 
 class Keyboard {
