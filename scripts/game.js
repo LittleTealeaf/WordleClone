@@ -95,7 +95,7 @@ function updateDisplay() {
 
     }
 
-    
+
 }
 
 class Keyboard {
@@ -258,13 +258,19 @@ async function keyPressed(k) {
                         })
                         activeGuess = null;
                         keyboard.hide();
-                        delete winprompt.dataset.hide
+                        delete winprompt.dataset.minimize
                     }
 
                 } else {
                     activeGuess.flashRed();
                 }
             }
+        }
+        // activeGuess.length ==
+        if(activeGuess.letters.length == 0 && WORDS.length == 0) {
+            delete winprompt.dataset.minimize;
+        } else {
+            winprompt.dataset.minimize = "";
         }
     } else {
         if (k.key == " ") {
@@ -296,7 +302,7 @@ function newGame() {
     keyboard = new Keyboard();
     keyboard.show();
     updateDisplay();
-    winprompt.dataset.hide = "";
+
 }
 
 document.getElementById("playagain").onclick = newGame

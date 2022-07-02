@@ -39,8 +39,15 @@ h1 {
 #winprompt {
     width: 100%;
     transition-duration: 0.5s;
+    overflow: hidden;
+    height: 500px;
 
     margin-bottom: 30px;
+}
+
+#winprompt[data-minimize] {
+    height: 0px;
+    transition-duration: 0.5s;
 }
 
 #winprompt .text {
