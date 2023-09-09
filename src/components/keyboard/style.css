@@ -1,0 +1,18 @@
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  justify-items: center;
+}
+
+.keyboard .row {
+  display: flex;
+  margin: auto;
+}
+
+.keyboard .key {
+  padding: 10px;
+  background-color: grey;
+  border-radius: 2px;
+  margin: 2px;
+}
