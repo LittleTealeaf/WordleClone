@@ -1,29 +1,38 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <!-- <link rel="stylesheet" href="style.css" /> -->
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css" />
-    <title>Tea-Wordle</title>
-    <script src="scripts/cookies.js"></script>
-    <script defer src="scripts/game.js"></script>
-  </head>
 
-  <body>
-    <h1 class="title">Tea-Wordle</h1>
-    <div id="winprompt">
-      <div class="title text">Victory!</div>
-      <div id="stats">
-        <div class="title">Guesses</div>
-        <div id="graph"></div>
-      </div>
+	<head>
+		<!-- <link rel="stylesheet" href="style.css" /> -->
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="style.css" />
+		<title>Tea-Wordle</title>
+		<script src="scripts/cookies.js"></script>
+		<script defer src="scripts/game.js"></script>
+	</head>
 
-      <div class="button noselect" id="playagain">Play Again</div>
-    </div>
-    <div id="board"></div>
+	<body data-theme="mocha">
+		<div id="winprompt">
+			<div class="title text">Wordle</div>
+			<div id="themes">
+				<button onclick="document.body.dataset.theme = 'latte'">Latte</button>
+				<button onclick="document.body.dataset.theme = 'frappe'">Frappe</button>
+				<button onclick="document.body.dataset.theme = 'macchiato'">
+					Macchiato
+				</button>
+				<button onclick="document.body.dataset.theme ='mocha'">Mocha</button>
+			</div>
+			<div id="stats">
+				<div class="title">Guesses</div>
+				<div id="graph"></div>
+			</div>
 
-    <div id="keyboard"></div>
-  </body>
+			<div class="button noselect" id="playagain">Play Again</div>
+		</div>
+		<div id="board"></div>
+
+		<div id="keyboard"></div>
+	</body>
+
 </html>

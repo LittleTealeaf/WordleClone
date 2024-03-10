@@ -18,6 +18,9 @@ let WORDS = [];
 
 var ANSWER = [];
 
+var has_stats = false;
+winprompt.dataset.minimize = "";
+
 function removeItemOnce(arr, value) {
 	var index = arr.indexOf(value);
 	if (index > -1) {
@@ -61,6 +64,7 @@ function updateDisplay() {
 		stats.innerHTML = "";
 
 		for (var i = 1; i <= max; i++) {
+			has_stats = true;
 			if (data[i] == null) {
 				data[i] = 0.1;
 			}
@@ -253,7 +257,9 @@ async function keyPressed(k) {
 						});
 						activeGuess = null;
 						keyboard.hide();
-						delete winprompt.dataset.minimize;
+						if (has_stats) {
+							delete winprompt.dataset.minimize;
+						}
 					}
 				} else {
 					activeGuess.flashRed();
@@ -262,7 +268,9 @@ async function keyPressed(k) {
 		}
 		// activeGuess.length ==
 		if (activeGuess.letters.length == 0 && WORDS.length == 0) {
-			delete winprompt.dataset.minimize;
+			if (has_stats) {
+				delete winprompt.dataset.minimize;
+			}
 		} else {
 			winprompt.dataset.minimize = "";
 		}
@@ -296,6 +304,12 @@ function newGame() {
 	keyboard = new Keyboard();
 	keyboard.show();
 	updateDisplay();
+}
+
+updateDisplay();
+
+if (has_stats) {
+	delete winprompt.dataset.minimize;
 }
 
 document.getElementById("playagain").onclick = newGame;
